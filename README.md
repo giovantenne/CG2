@@ -38,6 +38,7 @@ You can check the firmware version you are currently running  by simply  looking
 
 
 ## Unboxing video
+[![See the video here](https://www.datocms-assets.com/56675/1708071548-cryptocurrency-ticker-v2-real-time-bitcoin-btc-price.png?auto=format&w=610)](https://www.youtube.com/watch?v=KbjArYrW6Es)
 
 
 ## Requirements
