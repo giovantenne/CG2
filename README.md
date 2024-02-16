@@ -37,7 +37,7 @@ You also can easily update the device firmware by downloading the latest version
 You can check the firmware version you are currently running  by simply  looking at the display during the booting process, below the bitcoin logo.
 
 
-## Unboxing video
+## Unboxing and setup video
 [![See the video here](https://www.datocms-assets.com/56675/1708071548-cryptocurrency-ticker-v2-real-time-bitcoin-btc-price.png?auto=format&w=610)](https://www.youtube.com/watch?v=KbjArYrW6Es)
 
 
