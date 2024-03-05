@@ -26,6 +26,7 @@ String valChange;
 String symbol;
 String pairs[3];
 short precisions[3];
+short tmpPrecisions[3];
 short selectedSymbol;
 String dailyHigh;
 String dailyLow;
@@ -494,8 +495,8 @@ bool checkCoin(String testSymbol, short c) {
     return false;
   }
   String minPrice = myResponseObject["symbols"][0]["filters"][0]["minPrice"];
-  precisions[c] = (minPrice.substring(minPrice.indexOf('.') + 1)).indexOf('1') + 1;
-  Serial.println(precisions[c]);
+  tmpPrecisions[c] = (minPrice.substring(minPrice.indexOf('.') + 1)).indexOf('1') + 1;
+  Serial.println(tmpPrecisions[c]);
   return true;
 }
 
@@ -522,6 +523,9 @@ void saveSettings(void){
       pairs[0]=c0;
       pairs[1]=c1;
       pairs[2]=c2;
+      precisions[0]=tmpPrecisions[0];
+      precisions[1]=tmpPrecisions[1];
+      precisions[2]=tmpPrecisions[2];
       selectedSymbol = 0;
       symbol=pairs[selectedSymbol];
       coinPrecision=precisions[selectedSymbol];
