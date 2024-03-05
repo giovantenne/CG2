@@ -42,7 +42,7 @@ void setDefaultValues();
 String formatStringToFloat(String s, short precision);
 String formatStringPercChange(String s);
 String httpGETRequest(const char* serverName);
-bool checkCoin(String testSymbol);
+bool checkCoin(String testSymbol, short c);
 void saveSettings(void);
 boolean isValidNumber(String str);
 void showInvalidParams();

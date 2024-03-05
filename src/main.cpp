@@ -1,7 +1,7 @@
 // 240x135
 #include "utils.h"
 
-static const String zticker_version = "v2.33";
+static const String zticker_version = "v2.34";
 static const String binanceStreamDomain = "data-stream.binance.com";
 static const String binanceApiBaseUrl = "https://data-api.binance.vision";
 static const String coingekoApiBaseUrl = "https://api.coingecko.com";
@@ -66,14 +66,11 @@ ACText(captionPair3, "<hr><strong>Pair n°3</strong>");
 ACText(captionPair4, "<hr>");
 ACInput(inputBrightness, "", "Brightness (0-100)", "", "100");
 ACInput(pair1, "", "Binance symbol (eg. BTCUSDT)", "", "BTCUSDT");
-ACInput(precision1, "", "Decimal digits (0-8)", "", "2");
 ACInput(pair2, "", "Binance symbol (eg. ETHBTC)", "", "ETHBTC");
-ACInput(precision2, "", "Decimal digits (0-8)", "", "2");
 ACInput(pair3, "", "Binance symbol (eg. XRPUSDT)", "", "XRPUSDT");
-ACInput(precision3, "", "Decimal digits (0-8)", "", "5");
 ACText(credits, "<hr>Follow me on Twitter: <a href='https://twitter.com/CryptoGadgetsIT'>@CryptoGadgetsIT</a>");
 ACSubmit(save2, "Save", "/setupexecute");
-AutoConnectAux aux2("/setup", "Settings", true, {captionPair0, inputBrightness, captionPair1, pair1, precision1, captionPair2, pair2, precision2, captionPair3, pair3, precision3, captionPair4, save2, credits});
+AutoConnectAux aux2("/setup", "Settings", true, {captionPair0, inputBrightness, captionPair1, pair1, captionPair2, pair2, captionPair3, pair3, captionPair4, save2, credits});
 AutoConnectAux aux3("/setupexecute", "", false);
 
 void setup()
@@ -122,6 +119,11 @@ void setup()
   Portal.join({aux2, aux1, aux1Execute, aux3});
   value = "";
   oldValue = "";
+
+  if(digitalRead(BUTTON_1) == 0){
+    deleteAllCredentials();
+  }
+
   if (Portal.begin()) {
     Serial.println("Connected to WiFi");
     if (WiFi.localIP().toString() != "0.0.0.0") {
@@ -146,7 +148,7 @@ void setup()
         WiFi.enableAP(false);
       }
     }
-    if(!checkCoin(symbol)){
+    if(!checkCoin(symbol, 0)){
       if(symbol != "btcusdt"){
         setDefaultValues();
       }
@@ -283,15 +285,12 @@ String initialize2(AutoConnectAux& aux, PageArgument& args) {
   tmpSymbol=pairs[0];
   tmpSymbol.toUpperCase();
   pair1.value = tmpSymbol;
-  precision1.value = precisions[0];
   tmpSymbol=pairs[1];
   tmpSymbol.toUpperCase();
   pair2.value = tmpSymbol;
-  precision2.value = precisions[1];
   tmpSymbol=pairs[2];
   tmpSymbol.toUpperCase();
   pair3.value = tmpSymbol;
-  precision3.value = precisions[2];
   inputBrightness.value=brightness;
   return String();
 }
@@ -484,9 +483,9 @@ String httpGETRequest(const char* serverName) {
   return payload;
 }
 
-bool checkCoin(String testSymbol) {
+bool checkCoin(String testSymbol, short c) {
   testSymbol.toUpperCase();
-  String serverPath = binanceApiBaseUrl + "/api/v3/avgPrice?symbol=" + testSymbol;
+  String serverPath = binanceApiBaseUrl + "/api/v3/exchangeInfo?symbol=" + testSymbol;
   String jsonBuffer = httpGETRequest(serverPath.c_str());
   Serial.println(jsonBuffer);
   DynamicJsonDocument myResponseObject(2048);
@@ -494,6 +493,9 @@ bool checkCoin(String testSymbol) {
   if(myResponseObject["code"].is<int>() || jsonBuffer == ""){
     return false;
   }
+  String minPrice = myResponseObject["symbols"][0]["filters"][0]["minPrice"];
+  precisions[c] = (minPrice.substring(minPrice.indexOf('.') + 1)).indexOf('1') + 1;
+  Serial.println(precisions[c]);
   return true;
 }
 
@@ -510,55 +512,45 @@ void saveSettings(void){
   spr.unloadFont();
   short newBrightness = Server.arg("inputBrightness").toInt();
   String c0 = Server.arg("pair1");
-  short p0 = Server.arg("precision1").toInt();
   String c1 = Server.arg("pair2");
-  short p1 = Server.arg("precision2").toInt();
   String c2 = Server.arg("pair3");
-  short p2 = Server.arg("precision3").toInt();
   c0.toLowerCase();
   c1.toLowerCase();
   c2.toLowerCase();
   if(isValidNumber(Server.arg("inputBrightness")) && newBrightness >= 0 && newBrightness <= 100){
-    if(isValidNumber(Server.arg("precision1")) && isValidNumber(Server.arg("precision2")) && isValidNumber(Server.arg("precision3")) && p0 >= 0 && p0 <= 8 && p1 >= 0 && p1 <= 8 && p2 >= 0 && p2 <= 8){
-      if (checkCoin(c0) && checkCoin(c1) && checkCoin(c2)){
-        pairs[0]=c0;
-        pairs[1]=c1;
-        pairs[2]=c2;
-        precisions[0]=p0;
-        precisions[1]=p1;
-        precisions[2]=p2;
-        selectedSymbol = 0;
-        symbol=pairs[selectedSymbol];
-        coinPrecision=precisions[selectedSymbol];
-        brightness=newBrightness;
-        Serial.println("WRITE TO EEPROM");
-        EEPROM.write(0, brightness);
-        EEPROM.write(sizeof(brightness), selectedSymbol);
-        writeStringToEEPROM(sizeof(brightness) + sizeof(selectedSymbol), pairs[0]);
-        EEPROM.write(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]), precisions[0]);
-        writeStringToEEPROM(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]), pairs[1]);
-        EEPROM.write(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]) + sizeof(pairs[1]), precisions[1]);
-        writeStringToEEPROM(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]) + sizeof(pairs[1]) + sizeof(precisions[1]), pairs[2]);
-        EEPROM.write(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]) + sizeof(pairs[1]) + sizeof(precisions[1]) + sizeof(pairs[2]), precisions[2]);
-        EEPROM.commit();
-        short convertedBrightness = brightness*255/100;
-        Serial.println(convertedBrightness);
-        ledcWrite(pwmLedChannelTFT, convertedBrightness);
-        value = "";
-        hideWsDisconnected = true;
-        connectClient();
-        hideWsDisconnected = false;
-        if(screen == 0){
-          showSymbol();
-        } else if(screen == 1) {
-          buildCandles();
-        } else if (screen == 2) {
-          showCmc();
-        }
-        Server.sendHeader("Location", "/setup?valid=true");
-      }else{
-        showInvalidParams();
+    if (checkCoin(c0, 0) && checkCoin(c1, 1) && checkCoin(c2, 2)){
+      pairs[0]=c0;
+      pairs[1]=c1;
+      pairs[2]=c2;
+      selectedSymbol = 0;
+      symbol=pairs[selectedSymbol];
+      coinPrecision=precisions[selectedSymbol];
+      brightness=newBrightness;
+      Serial.println("WRITE TO EEPROM");
+      EEPROM.write(0, brightness);
+      EEPROM.write(sizeof(brightness), selectedSymbol);
+      writeStringToEEPROM(sizeof(brightness) + sizeof(selectedSymbol), pairs[0]);
+      EEPROM.write(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]), precisions[0]);
+      writeStringToEEPROM(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]), pairs[1]);
+      EEPROM.write(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]) + sizeof(pairs[1]), precisions[1]);
+      writeStringToEEPROM(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]) + sizeof(pairs[1]) + sizeof(precisions[1]), pairs[2]);
+      EEPROM.write(sizeof(brightness) + sizeof(selectedSymbol) + sizeof(pairs[0]) + sizeof(precisions[0]) + sizeof(pairs[1]) + sizeof(precisions[1]) + sizeof(pairs[2]), precisions[2]);
+      EEPROM.commit();
+      short convertedBrightness = brightness*255/100;
+      Serial.println(convertedBrightness);
+      ledcWrite(pwmLedChannelTFT, convertedBrightness);
+      value = "";
+      hideWsDisconnected = true;
+      connectClient();
+      hideWsDisconnected = false;
+      if(screen == 0){
+        showSymbol();
+      } else if(screen == 1) {
+        buildCandles();
+      } else if (screen == 2) {
+        showCmc();
       }
+      Server.sendHeader("Location", "/setup?valid=true");
     }else{
       showInvalidParams();
     }
