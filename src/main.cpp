@@ -1,7 +1,7 @@
 // 240x135
 #include "utils.h"
 
-static const String zticker_version = "v2.34";
+static const String zticker_version = "v2.35";
 static const String binanceStreamDomain = "data-stream.binance.com";
 static const String binanceApiBaseUrl = "https://data-api.binance.vision";
 static const String coingekoApiBaseUrl = "https://api.coingecko.com";
@@ -69,9 +69,12 @@ ACInput(inputBrightness, "", "Brightness (0-100)", "", "100");
 ACInput(pair1, "", "Binance symbol (eg. BTCUSDT)", "", "BTCUSDT");
 ACInput(pair2, "", "Binance symbol (eg. ETHBTC)", "", "ETHBTC");
 ACInput(pair3, "", "Binance symbol (eg. XRPUSDT)", "", "XRPUSDT");
+ACInput(precision1, "", "Decimal digits (blank for default)", "", "");
+ACInput(precision2, "", "Decimal digits (blank for default)", "", "");
+ACInput(precision3, "", "Decimal digits (blank for default)", "", "");
 ACText(credits, "<hr>Follow me on Twitter: <a href='https://twitter.com/CryptoGadgetsIT'>@CryptoGadgetsIT</a>");
 ACSubmit(save2, "Save", "/setupexecute");
-AutoConnectAux aux2("/setup", "Settings", true, {captionPair0, inputBrightness, captionPair1, pair1, captionPair2, pair2, captionPair3, pair3, captionPair4, save2, credits});
+AutoConnectAux aux2("/setup", "Settings", true, {captionPair0, inputBrightness, captionPair1, pair1, precision1, captionPair2, pair2, precision2, captionPair3, pair3, precision3, captionPair4, save2, credits});
 AutoConnectAux aux3("/setupexecute", "", false);
 
 void setup()
@@ -111,6 +114,7 @@ void setup()
   Config.ota = AC_OTA_BUILTIN;
   Config.title = "CryptoGadgets " + zticker_version;
   Config.apid = "ToTheMoon";
+  /* Config.psk  = "12345678"; */
   Config.menuItems = AC_MENUITEM_CONFIGNEW | AC_MENUITEM_UPDATE;
   Config.boundaryOffset = EEPROM_SIZE;
   Portal.config(Config);
@@ -286,12 +290,15 @@ String initialize2(AutoConnectAux& aux, PageArgument& args) {
   tmpSymbol=pairs[0];
   tmpSymbol.toUpperCase();
   pair1.value = tmpSymbol;
+  precision1.value = precisions[0];
   tmpSymbol=pairs[1];
   tmpSymbol.toUpperCase();
   pair2.value = tmpSymbol;
+  precision2.value = precisions[1];
   tmpSymbol=pairs[2];
   tmpSymbol.toUpperCase();
   pair3.value = tmpSymbol;
+  precision3.value = precisions[2];
   inputBrightness.value=brightness;
   return String();
 }
@@ -518,6 +525,9 @@ void saveSettings(void){
   c0.toLowerCase();
   c1.toLowerCase();
   c2.toLowerCase();
+  short p0 = Server.arg("precision1").toInt();
+  short p1 = Server.arg("precision2").toInt();
+  short p2 = Server.arg("precision3").toInt();
   if(isValidNumber(Server.arg("inputBrightness")) && newBrightness >= 0 && newBrightness <= 100){
     if (checkCoin(c0, 0) && checkCoin(c1, 1) && checkCoin(c2, 2)){
       pairs[0]=c0;
@@ -526,6 +536,12 @@ void saveSettings(void){
       precisions[0]=tmpPrecisions[0];
       precisions[1]=tmpPrecisions[1];
       precisions[2]=tmpPrecisions[2];
+      if(isValidNumber(Server.arg("precision1")) &&  p0 >= 0 && p0 <= 8)
+        precisions[0]=p0;
+      if(isValidNumber(Server.arg("precision2")) &&  p1 >= 0 && p1 <= 8)
+        precisions[1]=p1;
+      if(isValidNumber(Server.arg("precision3")) &&  p2 >= 0 && p2 <= 8)
+        precisions[2]=p2;
       selectedSymbol = 0;
       symbol=pairs[selectedSymbol];
       coinPrecision=precisions[selectedSymbol];
