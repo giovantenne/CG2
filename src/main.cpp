@@ -1,7 +1,7 @@
 // 240x135
 #include "utils.h"
 
-static const String zticker_version = "v2.35";
+static const String zticker_version = "v2.36";
 static const String binanceStreamDomain = "data-stream.binance.com";
 static const String binanceApiBaseUrl = "https://data-api.binance.vision";
 static const String coingekoApiBaseUrl = "https://api.coingecko.com";
@@ -21,6 +21,7 @@ AutoConnectConfig Config;
 WebSocketsClient client;
 String value;
 String oldValue;
+String timedValue;
 String percChange;
 String valChange;
 String symbol;
@@ -144,7 +145,7 @@ void setup()
       spr.unloadFont();
       Serial.println("Connection Opened");
       delay(3000);
-      readBatteryLevel();
+      // readBatteryLevel();
       short convertedBrightness = brightness*255/100;
       Serial.println(convertedBrightness);
       ledcWrite(pwmLedChannelTFT, convertedBrightness);
@@ -238,16 +239,22 @@ void loop()
         EEPROM.commit();
       }
       if (millis() - timedTaskmDetection > timedTaskInterval) {
-        readBatteryLevel();
+        // readBatteryLevel();
         timedTaskmDetection = millis();
         Serial.println("Execute timed task...");
-        Serial.println(millis());
         if (screen == 1) {
           Serial.println("Build candles...");
           buildCandles();
         } else if (screen == 2 && !cmcLoading) {
           Serial.println("Refresh CMC");
           showCmc();
+        } else {
+          if(timedValue == value){
+            Serial.println("Price freeze...");
+            connectClient();
+          }
+          else
+            timedValue = value;
         }
       }
       looped = true;
