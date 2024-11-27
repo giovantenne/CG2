@@ -252,9 +252,9 @@ void loop()
           if(timedValue == value){
             Serial.println("Price freeze...");
             connectClient();
-          }
-          else
+          } else {
             timedValue = value;
+          }
         }
       }
       looped = true;
