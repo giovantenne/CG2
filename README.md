@@ -51,7 +51,7 @@ You can check the firmware version you are currently running  by simply  looking
 - Run `pio run -t upload`
 
 ## Donations/Project contributions
-If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡`cryptogadgets@pos.btcpayserver.it`⚡ or on-chain `bc1qguuehe5pklgyzkt4489yqxdazwltep2pchxaap`
+If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡`cg@pos.btcpayserver.it`⚡ or on-chain `bc1qdx6r7z2c2dtdfa2tn9a2u4rc3g5myyfquqq97x`
 
 If you want to order a fully assembled multipurpose V2 or V3 devices you can contribute to my job at https://www.cryptogadgets.net
 
