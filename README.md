@@ -47,11 +47,11 @@ You can check the firmware version you are currently running  by simply  looking
 
 ## Download and load the firmware
 
-Easiest way to flash firmware. Build your own CGv2 using the following firmware flash tool:
+The easiest way to flash firmware. Build your own CGv2 using the following firmware flash tool:
 
 - Download the latest firmware from the [Releases](https://github.com/giovantenne/CG2/releases) page
-- Download the [partitions.bin](https://github.com/giovantenne/CG2/blob/master/bin/partitions.bin) file
-- Download the [bootloader.bin](https://github.com/giovantenne/CG2/blob/master/bin/bootloader.bin) file
+- Download the [partitions.bin](https://github.com/giovantenne/CG2/raw/refs/heads/master/bin/partitions.bin) file
+- Download the [bootloader.bin](https://github.com/giovantenne/CG2/raw/refs/heads/master/bin/bootloader.bin) file
 - Use the nice [ESP Web Tool Flash](https://esp.huhn.me/) tool to Flash your device firmware through your browser  (recommend via Google Chrome incognito mode)
 - Connect your device and adjust the table as for the image below and click _PROGRAM_:
 
@@ -59,7 +59,7 @@ Easiest way to flash firmware. Build your own CGv2 using the following firmware 
 
 ## Build from source and load the firmware
 - Clone this repository `git clone https://github.com/giovantenne/CG2`
-- Install PlatformIO Core (https://platformio.org/install/cli)
+- Install [PlatformIO Core](https://platformio.org/install/cli)
 - Connect the board via USB
 - Run `cd CG2 && pio run -t upload`
 
