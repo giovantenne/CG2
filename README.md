@@ -45,10 +45,22 @@ You can check the firmware version you are currently running  by simply  looking
 - TTGO T-Display - [here](https://www.lilygo.cc/products/lilygo%C2%AE-ttgo-t-display-1-14-inch-lcd-esp32-control-board)
 - 3D BOX - [here](stl/)
 
-## Build and load the firmware
+## Download and load the firmware
+
+Easiest way to flash firmware. Build your own CGv2 using the following firmware flash tool:
+
+- Download the last firmware from the _Releases_ page: https://github.com/giovantenne/CG2/releases`
+- Download the [partitions.bin](https://github.com/giovantenne/CG2/bin/partitions.bin) file 
+- Download the [bootloader.bin](https://github.com/giovantenne/CG2/bin/bootloader.bin) file 
+- Use the nice [ESP Web Tool Flash](https://esp.huhn.me/) tool to Flash your device firmware through your browser  (recommend via Google Chrome incognito mode)
+- Connect your device and adjust the table as for the image below and click _PROGRAM_:
+![ESP Web Tool Flash table](https://github.com/giovantenne/CG2/bin/ESPWebTool.png)
+
+## Build from source and load the firmware
+- Clone this repository `git clone https://github.com/giovantenne/CG2`
 - Install PlatformIO Core (https://platformio.org/install/cli)
 - Connect the board via USB
-- Run `pio run -t upload`
+- Run `cd CG2 && pio run -t upload`
 
 ## Donations/Project contributions
 If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡`cg@pos.btcpayserver.it`⚡ or on-chain `bc1qdx6r7z2c2dtdfa2tn9a2u4rc3g5myyfquqq97x`
