@@ -52,8 +52,8 @@ The easiest way to flash firmware. Build your own CGv2 using the following firmw
 - Download the latest firmware from the [Releases](https://github.com/giovantenne/CG2/releases) page
 - Download the [partitions.bin](https://github.com/giovantenne/CG2/raw/refs/heads/master/bin/partitions.bin) file
 - Download the [bootloader.bin](https://github.com/giovantenne/CG2/raw/refs/heads/master/bin/bootloader.bin) file
-- Use the nice [ESP Web Tool Flash](https://esp.huhn.me/) tool to Flash your device firmware through your browser  (recommend via Google Chrome incognito mode)
-- Connect your device, adjust the table as for the image below and click _PROGRAM_:
+- Open the [ESP Web Tool](https://esp.huhn.me/) to flash the firmware directly from your browser  (recommended via Google Chrome incognito mode)
+- Connect your device, set the table as shown in the image below, and click _PROGRAM_:
 
 ![ESP Web Tool Flash table](https://github.com/giovantenne/CG2/blob/master/bin/ESPWebTool.png)
 
