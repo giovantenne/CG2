@@ -64,7 +64,7 @@ The easiest way to flash firmware. Build your own CGv2 using the following firmw
 - Run `cd CG2 && pio run -t upload`
 
 ## Donations/Project contributions
-If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡`cg@pos.btcpayserver.it`⚡ or on-chain `bc1qdx6r7z2c2dtdfa2tn9a2u4rc3g5myyfquqq97x`
+If you would like to contribute and help dev team with this project you can send a donation to the following LN address ⚡`cg@pos.btcpayserver.it`⚡ or on-chain `bc1qdxyt2df70xh6cnysenr32pt0z0pyuelschsctv`
 
 If you want to order a fully assembled multipurpose V2 or V3 devices you can contribute to my job at https://www.cryptogadgets.net
 
